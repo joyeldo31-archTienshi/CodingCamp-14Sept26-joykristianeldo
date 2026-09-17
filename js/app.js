@@ -1,4 +1,4 @@
-/* Expense & Budget Visualizer — app.js */
+﻿/* Expense & Budget Visualizer 窶・app.js */
 
 // =============================================================================
 // === State ===================================================================
@@ -6,7 +6,7 @@
 
 const state = {
   transactions: [],  // Array<Transaction>
-  storageError: null // string | null — set when localStorage operations fail
+  storageError: null // string | null 窶・set when localStorage operations fail
 };
 
 /**
@@ -74,7 +74,7 @@ const Storage = {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw === null) {
-        // No data saved yet — treat as a fresh start, not an error.
+        // No data saved yet 窶・treat as a fresh start, not an error.
         return [];
       }
       const parsed = JSON.parse(raw);
@@ -99,7 +99,7 @@ const VALID_CATEGORIES = ['Food', 'Transport', 'Fun'];
 const Validator = {
   /**
    * Validates form input before creating a transaction.
-   * Pure function — no DOM side-effects.
+   * Pure function 窶・no DOM side-effects.
    *
    * @param {{ name: string, amount: string|number, category: string }} param0
    * @returns {{ valid: boolean, errors: { name?: string, amount?: string, category?: string } }}
@@ -163,7 +163,7 @@ function calculateBalance(transactions) {
 
 const UI = {
   // ---------------------------------------------------------------------------
-  // 6.1 — renderList(transactions)
+  // 6.1 窶・renderList(transactions)
   // Clears #transaction-list and re-renders one <li> per transaction.
   // Each row shows: name, formatted amount, category, and a delete button.
   // Shows an empty-state message when the array is empty.
@@ -193,7 +193,7 @@ const UI = {
       nameSpan.className = 'tx-name';
       nameSpan.textContent = tx.name;
 
-      // Amount — always 2 decimal places
+      // Amount 窶・always 2 decimal places
       const amountSpan = document.createElement('span');
       amountSpan.className = 'tx-amount';
       amountSpan.textContent = '$' + tx.amount.toFixed(2);
@@ -203,7 +203,7 @@ const UI = {
       categorySpan.className = 'tx-category';
       categorySpan.textContent = tx.category;
 
-      // Delete button — carries the transaction id as a data attribute
+      // Delete button 窶・carries the transaction id as a data attribute
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'tx-delete';
       deleteBtn.type = 'button';
@@ -220,7 +220,7 @@ const UI = {
   },
 
   // ---------------------------------------------------------------------------
-  // 6.3 — renderBalance(transactions)
+  // 6.3 窶・renderBalance(transactions)
   // Delegates to calculateBalance() and writes the result to #balance-display.
   // ---------------------------------------------------------------------------
   renderBalance(transactions) {
@@ -230,7 +230,7 @@ const UI = {
   },
 
   // ---------------------------------------------------------------------------
-  // 6.5a — renderErrors(errors)
+  // 6.5a 窶・renderErrors(errors)
   // Clears every .error-msg span, then writes a message into the span that
   // corresponds to each offending field ('name', 'amount', 'category').
   // ---------------------------------------------------------------------------
@@ -261,7 +261,7 @@ const UI = {
   },
 
   // ---------------------------------------------------------------------------
-  // 6.5b — clearForm()
+  // 6.5b 窶・clearForm()
   // Resets all Input_Form fields to their default empty / unselected state.
   // ---------------------------------------------------------------------------
   clearForm() {
@@ -274,7 +274,7 @@ const UI = {
   },
 
   // ---------------------------------------------------------------------------
-  // 6.5c — showInfoMessage(message)
+  // 6.5c 窶・showInfoMessage(message)
   // Displays a transient info banner that auto-dismisses after 5 seconds.
   // Used for non-critical notices such as a storage load failure on startup.
   // ---------------------------------------------------------------------------
@@ -293,7 +293,7 @@ const UI = {
   },
 
   // ---------------------------------------------------------------------------
-  // 6.5d — showStorageError(message)
+  // 6.5d 窶・showStorageError(message)
   // Displays a persistent error banner that stays until the user dismisses it.
   // The dismiss button (#error-banner-close) is already in the HTML; we wire it
   // here so it works even if the event-listener init phase has not run yet.
@@ -307,7 +307,7 @@ const UI = {
     msgSpan.textContent = message;
     banner.hidden = false;
 
-    // Wire the dismiss button (safe to call multiple times — addEventListener
+    // Wire the dismiss button (safe to call multiple times 窶・addEventListener
     // with the same named function does not add duplicate listeners)
     if (closeBtn && !closeBtn._dismissWired) {
       closeBtn.addEventListener('click', function () {
@@ -328,10 +328,10 @@ const UI = {
 // literal stored in the same `Chart` name AFTER Chart.js has been loaded.
 // Chart.js attaches itself to `window.Chart`, so we save a reference to the
 // constructor before we shadow the name, then use that reference inside init.
-const _ChartJSConstructor = (typeof Chart !== 'undefined') ? Chart : null;
+const _ChartJSConstructor = (typeof window.Chart !== 'undefined') ? window.Chart : null;
 
-const Chart = {
-  // Internal Chart.js instance — created once by Chart.init().
+const AppChart = {
+  // Internal Chart.js instance 窶・created once by AppChart.init().
   _instance: null,
 
   // Colour palette for the three categories (Food, Transport, Fun).
@@ -343,7 +343,7 @@ const Chart = {
   },
 
   // ---------------------------------------------------------------------------
-  // 7.1 — Chart.computeData(transactions)
+  // 7.1 窶・AppChart.computeData(transactions)
   // Pure function. Returns { labels, data, percentages } ready for Chart.js.
   // Categories whose rounded percentage is exactly 0.0% are excluded.
   // ---------------------------------------------------------------------------
@@ -386,13 +386,13 @@ const Chart = {
   },
 
   // ---------------------------------------------------------------------------
-  // 7.4a — Chart.init(canvasId)
+  // 7.4a 窶・AppChart.init(canvasId)
   // Creates the Chart.js doughnut instance on the given canvas element.
   // Should be called exactly once on DOMContentLoaded.
   // ---------------------------------------------------------------------------
   init(canvasId) {
     if (!_ChartJSConstructor) {
-      // Chart.js CDN did not load — show fallback
+      // Chart.js CDN did not load 窶・show fallback
       this._showPlaceholder('Chart library could not be loaded.');
       return;
     }
@@ -403,7 +403,7 @@ const Chart = {
       return;
     }
 
-    // Start with no data; Chart.update() will populate on first render.
+    // Start with no data; AppChart.update() will populate on first render.
     try {
       this._instance = new _ChartJSConstructor(canvas, {
         type: 'pie',
@@ -435,7 +435,7 @@ const Chart = {
                   // Tooltip: "Food: $45.30 (45.3%)"
                   const rawLabel = context.label || '';
                   const value    = context.parsed || 0;
-                  return ' $' + value.toFixed(2) + '  —  ' + rawLabel;
+                  return ' $' + value.toFixed(2) + '  窶・ ' + rawLabel;
                 }
               }
             }
@@ -448,7 +448,7 @@ const Chart = {
   },
 
   // ---------------------------------------------------------------------------
-  // 7.4b — Chart.update(transactions)
+  // 7.4b 窶・AppChart.update(transactions)
   // Recomputes chart data and updates the live Chart.js instance.
   // Shows/hides the placeholder element depending on whether there is data.
   // ---------------------------------------------------------------------------
@@ -481,7 +481,7 @@ const Chart = {
   },
 
   // ---------------------------------------------------------------------------
-  // Helpers — show / hide the placeholder element and the canvas
+  // Helpers 窶・show / hide the placeholder element and the canvas
   // ---------------------------------------------------------------------------
   _showPlaceholder(message) {
     const placeholder = document.getElementById('chart-placeholder');
@@ -522,8 +522,8 @@ function init() {
 
   UI.renderList(state.transactions);
   UI.renderBalance(state.transactions);
-  Chart.init('expense-chart');
-  Chart.update(state.transactions);
+  AppChart.init('expense-chart');
+  AppChart.update(state.transactions);
 
   // If storage returned an error during load, surface an info message.
   if (state.storageError) {
@@ -547,7 +547,7 @@ function init() {
         return;
       }
 
-      // Valid input — clear any lingering errors, then add the transaction.
+      // Valid input 窶・clear any lingering errors, then add the transaction.
       UI.renderErrors({});
       addTransaction({ name: name, amount: amount, category: category });
 
@@ -557,7 +557,7 @@ function init() {
 
       UI.renderList(state.transactions);
       UI.renderBalance(state.transactions);
-      Chart.update(state.transactions);
+      AppChart.update(state.transactions);
       UI.clearForm();
 
       // Notify the user if the save failed (state.storageError was set by Storage.save).
@@ -597,10 +597,11 @@ function init() {
 
       UI.renderList(state.transactions);
       UI.renderBalance(state.transactions);
-      Chart.update(state.transactions);
+      AppChart.update(state.transactions);
     });
   }
 }
 
 // Kick everything off once the DOM is ready.
 document.addEventListener('DOMContentLoaded', init);
+
