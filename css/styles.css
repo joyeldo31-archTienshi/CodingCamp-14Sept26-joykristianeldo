@@ -1,0 +1,515 @@
+/* Expense & Budget Visualizer — styles.css */
+/* Task 10.1: Base layout, typography, and responsive structure */
+
+/* =============================================================================
+   Custom Properties (Design Tokens)
+   ============================================================================= */
+
+:root {
+  /* Colors — all combos meet WCAG 4.5:1 against their paired background */
+  --color-bg:           #f5f5f0;   /* off-white page background */
+  --color-surface:      #ffffff;   /* card / section background */
+  --color-border:       #d1d1c8;   /* subtle borders */
+  --color-text:         #1a1a1a;   /* primary body text — 15.6:1 on white */
+  --color-text-muted:   #595950;   /* secondary/muted text — 7.0:1 on white */
+  --color-heading:      #0f0f0f;   /* headings — slightly darker */
+  --color-accent:       #1d5fa8;   /* interactive blue — 5.9:1 on white */
+  --color-accent-hover: #174d8c;   /* hover state */
+  --color-danger:       #b91c1c;   /* error text — 5.8:1 on white */
+  --color-danger-bg:    #fef2f2;   /* error banner background */
+  --color-danger-border:#f8c0c0;
+  --color-info-bg:      #eff6ff;   /* info banner background */
+  --color-info-border:  #bfdbfe;
+  --color-info-text:    #1e3a5f;   /* 9.4:1 on --color-info-bg */
+  --color-balance-bg:   #1d5fa8;   /* header accent strip */
+  --color-balance-text: #ffffff;   /* white on --color-balance-bg — 5.9:1 */
+
+  /* Typography */
+  --font-family:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                  Helvetica, Arial, sans-serif, "Apple Color Emoji";
+  --font-size-base:      1rem;       /* 16px */
+  --font-size-sm:        0.875rem;   /* 14px — still ≥ 12px */
+  --font-size-xs:        0.75rem;    /* 12px — minimum for secondary labels */
+  --font-size-h1:        1.75rem;    /* 28px */
+  --font-size-h2:        1.25rem;    /* 20px */
+  --font-size-balance:   2rem;       /* 32px */
+  --font-weight-normal:  400;
+  --font-weight-medium:  500;
+  --font-weight-bold:    700;
+  --line-height-base:    1.5;
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+
+  /* Borders & Shadows */
+  --radius-sm:  0.25rem;
+  --radius-md:  0.5rem;
+  --radius-lg:  0.75rem;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* =============================================================================
+   Reset & Base
+   ============================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px; /* anchors rem units */
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  min-width: 320px; /* Req 7.5: usable at 320px */
+}
+
+/* =============================================================================
+   Typography
+   ============================================================================= */
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-balance-text); /* white on header's blue background */
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: var(--space-4);
+}
+
+label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+/* Secondary labels — balance label and error messages meet ≥ 12px */
+.balance-label {
+  font-size: var(--font-size-xs);   /* 12px — meets minimum */
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.85); /* on blue header — sufficient contrast */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.error-msg {
+  display: block;
+  font-size: var(--font-size-xs);  /* 12px — meets minimum */
+  color: var(--color-danger);      /* 5.8:1 on white */
+  margin-top: var(--space-1);
+  min-height: 1.2em; /* reserves space to avoid layout shift */
+}
+
+/* =============================================================================
+   Info & Error Banners
+   ============================================================================= */
+
+#info-banner {
+  background-color: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
+  color: var(--color-info-text);
+  font-size: var(--font-size-sm);
+  padding: var(--space-3) var(--space-6);
+  text-align: center;
+}
+
+#info-banner[hidden] {
+  display: none;
+}
+
+#error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  padding: var(--space-3) var(--space-6);
+}
+
+#error-banner[hidden] {
+  display: none;
+}
+
+#error-banner-msg {
+  flex: 1;
+}
+
+#error-banner-close {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  padding: var(--space-1) var(--space-2);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#error-banner-close:hover,
+#error-banner-close:focus-visible {
+  background-color: var(--color-danger);
+  color: #ffffff;
+  outline: none;
+}
+
+/* =============================================================================
+   Header
+   ============================================================================= */
+
+header {
+  background-color: var(--color-balance-bg);
+  color: var(--color-balance-text);
+  padding: var(--space-6) var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.balance-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+#balance-display {
+  font-size: var(--font-size-balance);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-balance-text);
+  line-height: 1;
+}
+
+/* =============================================================================
+   Main Layout — CSS Grid
+   Two-column grid (form | list) with chart spanning full width below.
+   Stacks to single column on narrow viewports.
+   ============================================================================= */
+
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "form  list"
+    "chart chart";
+  gap: var(--space-6);
+  padding: var(--space-8);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Section base styles */
+.form-section,
+.list-section,
+.chart-section {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+.form-section  { grid-area: form;  }
+.list-section  { grid-area: list;  }
+.chart-section { grid-area: chart; }
+
+/* =============================================================================
+   Input Form
+   ============================================================================= */
+
+#expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base); /* ≥ 16px — prevents iOS zoom */
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(29, 95, 168, 0.20);
+}
+
+/* Custom chevron for <select> */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23595950' d='M4.5 6L8 9.5 11.5 6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+select option[value=""][disabled] {
+  color: var(--color-text-muted);
+}
+
+#submit-btn {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: #ffffff;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-6);
+  cursor: pointer;
+  width: 100%;
+  margin-top: var(--space-2);
+  transition: background-color 0.15s ease;
+}
+
+#submit-btn:hover,
+#submit-btn:focus-visible {
+  background-color: var(--color-accent-hover);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 95, 168, 0.30);
+}
+
+/* =============================================================================
+   Transaction List
+   ============================================================================= */
+
+#transaction-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* Task 10.2 additions — Req 2.2: scrollable when items overflow */
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  min-width: 0; /* allow flex children to shrink below natural width */
+}
+
+.tx-name {
+  flex: 1 1 auto;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tx-amount {
+  flex-shrink: 0;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.tx-category {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  background-color: var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+.tx-delete {
+  flex-shrink: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-danger);
+  background: none;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tx-delete:hover,
+.tx-delete:focus-visible {
+  background-color: var(--color-danger);
+  color: #ffffff;
+  outline: none;
+}
+
+.transaction-empty {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+/* =============================================================================
+   Chart Section
+   ============================================================================= */
+
+.chart-placeholder {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+}
+
+.chart-placeholder[hidden] {
+  display: none;
+}
+
+#expense-chart {
+  display: block;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+#expense-chart[hidden] {
+  display: none;
+}
+
+/* =============================================================================
+   Responsive — stack form and list on viewports ≤ 768px
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "form"
+      "list"
+      "chart";
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  header {
+    padding: var(--space-4) var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .balance-wrapper {
+    align-items: flex-start;
+  }
+
+  /* Task 10.2 additions — reduce list height on mobile (Req 2.2) */
+  #transaction-list {
+    max-height: 320px;
+  }
+}
+
+/* =============================================================================
+   Responsive — narrow viewports (≤ 480px)
+   ============================================================================= */
+
+@media (max-width: 480px) {
+  main {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .form-section,
+  .list-section,
+  .chart-section {
+    padding: var(--space-4);
+  }
+
+  /* Tighten up transaction row at very small sizes */
+  .transaction-item {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .tx-name {
+    flex-basis: 100%;
+    white-space: normal;
+  }
+}
+
+/* =============================================================================
+   Minimum viewport — ensure nothing clips at 320px (Req 7.5)
+   ============================================================================= */
+
+@media (max-width: 320px) {
+  /* Task 10.2 additions — Req 7.5: prevent horizontal overflow/clip at minimum viewport */
+  body {
+    overflow-x: hidden;
+  }
+
+  header {
+    padding: var(--space-3);
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  #balance-display {
+    font-size: 1.5rem;
+  }
+
+  .form-section,
+  .list-section,
+  .chart-section {
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+}
